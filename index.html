@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SafeSync</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f7fb;
+        }
+
+        header {
+            background: #173b63;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 25px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px #ccc;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #173b63;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+
+        .status {
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛡️ SafeSync</h1>
+    <p>Emergency Information Vault</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>🚨 Emergency Information</h2>
+
+        <input type="text" id="name" placeholder="Your Name">
+
+        <input type="text" id="contact" placeholder="Emergency Contact">
+
+        <textarea id="message" placeholder="Emergency Instructions"></textarea>
+
+        <button onclick="saveData()">Save Information</button>
+    </div>
+
+    <div class="card">
+        <h2>☁️ Cloud Sync Status</h2>
+
+        <div class="status" id="status">
+            Ready to Sync
+        </div>
+
+        <button onclick="syncData()">Sync to Cloud</button>
+    </div>
+
+    <div class="card">
+        <h2>📊 Saved Information</h2>
+
+        <p id="display">No information saved yet.</p>
+    </div>
+
+</div>
+
+<script>
+
+function saveData() {
+
+    let name = document.getElementById("name").value;
+    let contact = document.getElementById("contact").value;
+    let message = document.getElementById("message").value;
+
+    let data = {
+        name: name,
+        contact: contact,
+        message: message
+    };
+
+    localStorage.setItem("safeSyncData", JSON.stringify(data));
+
+    document.getElementById("display").innerHTML =
+        "<b>Name:</b> " + name +
+        "<br><b>Emergency Contact:</b> " + contact +
+        "<br><b>Instructions:</b> " + message;
+
+    document.getElementById("status").innerText =
+        "Saved Offline ✅";
+}
+
+function syncData() {
+
+    let data = localStorage.getItem("safeSyncData");
+
+    if (data) {
+        document.getElementById("status").innerText =
+            "Data Ready for Cloud Sync ☁️";
+    } else {
+        document.getElementById("status").innerText =
+            "No data available ❌";
+    }
+}
+
+</script>
+
+</body>
+</html>
