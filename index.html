@@ -41,11 +41,16 @@
             border: 1px solid #ccc;
         }
 
+        textarea {
+            min-height: 90px;
+        }
+
         button {
             background: #173b63;
             color: white;
             border: none;
             font-size: 16px;
+            cursor: pointer;
         }
 
         button:active {
@@ -58,13 +63,23 @@
             border-radius: 8px;
             color: #2e7d32;
         }
+
+        .call-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 18px;
+            background: #173b63;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
 <body>
 
 <header>
-    <h1>🛡️ SafeSync</h1>
+    <h1>🚨 SafeSync</h1>
     <p>Emergency Information Vault</p>
 </header>
 
@@ -77,10 +92,12 @@
 
         <input type="text" id="contact" placeholder="Emergency Contact">
 
-        <textarea id="message" placeholder="Emergency Instructions"></textarea>
+        <textarea id="message"
+            placeholder="Emergency Instructions"></textarea>
 
         <button onclick="saveData()">Save Information</button>
     </div>
+
 
     <div class="card">
         <h2>☁️ Cloud Sync Status</h2>
@@ -92,13 +109,16 @@
         <button onclick="syncData()">Sync to Cloud</button>
     </div>
 
+
     <div class="card">
         <h2>📊 Saved Information</h2>
 
         <p id="display">No information saved yet.</p>
+
     </div>
 
 </div>
+
 
 <script>
 
@@ -108,6 +128,11 @@ function saveData() {
     let contact = document.getElementById("contact").value;
     let message = document.getElementById("message").value;
 
+    if (name === "" || contact === "" || message === "") {
+        alert("Please fill all emergency information.");
+        return;
+    }
+
     let data = {
         name: name,
         contact: contact,
@@ -116,28 +141,67 @@ function saveData() {
 
     localStorage.setItem("safeSyncData", JSON.stringify(data));
 
-    document.getElementById("display").innerHTML =
-        "<b>Name:</b> " + name +
-        "<br><b>Emergency Contact:</b> " + contact +
-        "<br><b>Instructions:</b> " + message;
+    displayData(data);
 
     document.getElementById("status").innerText =
         "Saved Offline ✅";
 }
+
+
+function displayData(data) {
+
+    document.getElementById("display").innerHTML =
+        "<b>Name:</b> " + data.name +
+        "<br><b>Emergency Contact:</b> " + data.contact +
+        "<br><b>Instructions:</b> " + data.message +
+        '<br><br><a class="call-button" href="tel:' +
+        data.contact +
+        '">📞 Call Emergency Contact</a>';
+}
+
 
 function syncData() {
 
     let data = localStorage.getItem("safeSyncData");
 
     if (data) {
+
         document.getElementById("status").innerText =
             "Data Ready for Cloud Sync ☁️";
+
+        alert("Data is ready for future cloud synchronization.");
+
     } else {
+
         document.getElementById("status").innerText =
             "No data available ❌";
     }
 }
 
-        </script>
+
+function loadData() {
+
+    let savedData = localStorage.getItem("safeSyncData");
+
+    if (savedData) {
+
+        let data = JSON.parse(savedData);
+
+        document.getElementById("name").value = data.name;
+        document.getElementById("contact").value = data.contact;
+        document.getElementById("message").value = data.message;
+
+        displayData(data);
+
+        document.getElementById("status").innerText =
+            "Data Loaded from Offline Storage ✅";
+    }
+}
+
+
+window.onload = loadData;
+
+</script>
+
 </body>
 </html>
